@@ -1,4 +1,4 @@
-package com.practice.doctor_appointment_booking.core.internal.exceptions;
+package com.practice.doctor_appointment_booking.doctor_availability.internal.exceptions;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @Slf4j
-@RestControllerAdvice(basePackages = "com.practice.doctor_appointment_booking.core.internal.controllers")
-public class CentralizedExceptionHandler {
+@RestControllerAdvice(basePackages = "com.practice.doctor_appointment_booking.doctor_availability.internal.controllers")
+public class DoctorAvailabilityCentralizedExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<CustomExceptionResponse> handleGeneralException(Exception e)

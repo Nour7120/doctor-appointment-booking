@@ -19,6 +19,7 @@ public class Group {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Enumerated(value = EnumType.STRING)
+    @Column(nullable = false)
     private GroupEnum name;
     @Builder.Default
     private boolean deleted = false;
