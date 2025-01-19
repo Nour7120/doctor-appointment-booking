@@ -1,7 +1,7 @@
 package com.practice.doctor_appointment_booking.core.internal.services;
 
 import com.practice.doctor_appointment_booking.core.CustomExceptionDTO;
-import com.practice.doctor_appointment_booking.core.ExposedServices;
+import com.practice.doctor_appointment_booking.core.ICoreExposedServices;
 import com.practice.doctor_appointment_booking.core.internal.repositories.ClientRepository;
 import com.practice.doctor_appointment_booking.core.internal.repositories.GroupRepository;
 import com.practice.doctor_appointment_booking.core.internal.daos.Client;
@@ -26,7 +26,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 @Slf4j
 @Service
-public class AuthorizationService implements ExposedServices {
+public class AuthorizationService implements ICoreExposedServices {
 
     private final ClientRepository clientRepository;
     private final GroupRepository groupRepository;
@@ -164,7 +164,7 @@ public class AuthorizationService implements ExposedServices {
     }
 
     @Override
-    public String getDoctorUsername(long doctorId) throws CustomExceptionDTO {
+    public String getClientUsername(long doctorId) throws CustomExceptionDTO {
         Client client = clientRepository.findById(doctorId).orElseThrow(() -> new CustomExceptionDTO(ExceptionMessages.CLIENT_NOT_FOUND.getErrorMessage()));
         return client.getUsername();
     }

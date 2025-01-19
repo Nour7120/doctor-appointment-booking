@@ -2,11 +2,11 @@ package com.practice.doctor_appointment_booking.doctor_availability.internal.ser
 
 
 import com.practice.doctor_appointment_booking.core.CustomExceptionDTO;
-import com.practice.doctor_appointment_booking.core.ExposedServices;
-import com.practice.doctor_appointment_booking.doctor_availability.internal.dtos.AddSlot;
-import com.practice.doctor_appointment_booking.doctor_availability.internal.dtos.GetSlotDTO;
-import com.practice.doctor_appointment_booking.doctor_availability.internal.dtos.GetSlotsResponse;
-import com.practice.doctor_appointment_booking.doctor_availability.internal.dtos.ObjectIdResponse;
+import com.practice.doctor_appointment_booking.core.ICoreExposedServices;
+import com.practice.doctor_appointment_booking.doctor_availability.AvailableSlotDTO;
+import com.practice.doctor_appointment_booking.doctor_availability.GetDoctorsAvailableSlotsDTO;
+import com.practice.doctor_appointment_booking.doctor_availability.IDoctorAvailabilityExposedServices;
+import com.practice.doctor_appointment_booking.doctor_availability.internal.dtos.*;
 import com.practice.doctor_appointment_booking.doctor_availability.internal.entities.Slot;
 import com.practice.doctor_appointment_booking.doctor_availability.internal.exceptions.CustomException;
 import com.practice.doctor_appointment_booking.doctor_availability.internal.exceptions.ExceptionMessages;
@@ -20,14 +20,16 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Slf4j
 @Service
-public class SlotService {
+public class SlotService implements IDoctorAvailabilityExposedServices{
 
     private final SlotRepository slotRepository;
-    private final ExposedServices exposedServices;
+    private final ICoreExposedServices ICoreExposedServices;
 
     @Transactional
     public ObjectIdResponse addSlot(long doctorId, AddSlot addSlot) throws CustomException {
@@ -48,9 +50,9 @@ public class SlotService {
     }
 
     private String getDoctorUsernameUsingDirectCall(long doctorId) throws CustomException {
-        String doctorUsername = null;
+        String doctorUsername;
         try {
-            doctorUsername = exposedServices.getDoctorUsername(doctorId);
+            doctorUsername = ICoreExposedServices.getClientUsername(doctorId);
         } catch (CustomExceptionDTO e) {
             throw new CustomException(e.getMessage());
         }
@@ -72,15 +74,12 @@ public class SlotService {
         List<Slot> doctorSlotList = slotRepository.findAllByDoctorId(doctorId);
         List<GetSlotDTO> slots = doctorSlotList.stream()
                 .map(
-                        slot -> {
-                            String time = formatTimeToProperView(slot.getTime());
-                            return GetSlotDTO.builder()
-                                    .id(slot.getId())
-                                    .time(time)
-                                    .cost(slot.getCost())
-                                    .isReserved(slot.isReserved())
-                                    .build();
-                        }
+                        slot -> GetSlotDTO.builder()
+                                .id(slot.getId())
+                                .time(slot.formatTimeToProperView(slot.getTime()))
+                                .cost(slot.getCost())
+                                .isReserved(slot.isReserved())
+                                .build()
                 )
                 .toList();
         log.info("Finished.");
@@ -91,11 +90,42 @@ public class SlotService {
                 .build();
     }
 
-    private String formatTimeToProperView(LocalDateTime time) {
-        log.info("Started");
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm a");
-        String formattedTime = time.format(formatter);
-        log.info("Finished");
-        return formattedTime;
+    @Override
+    public GetDoctorsAvailableSlotsDTO fetchDoctorsAvailableSlots() {
+        log.info("Started.");
+        List<Slot> allByReservedIsFalse = slotRepository.findAllByReservedIsFalse();
+        List<AvailableSlotDTO> availableSlotDTOS = allByReservedIsFalse.stream()
+                .map(
+                        slot -> AvailableSlotDTO.builder()
+                                .id(slot.getId())
+                                .time(slot.formatTimeToProperView(slot.getTime()))
+                                .cost(slot.getCost())
+                                .doctorId(slot.getDoctorId())
+                                .doctorName(slot.getDoctorName())
+                                .build()
+                ).toList();
+        log.info("Finished.");
+        return GetDoctorsAvailableSlotsDTO
+                .builder()
+                .availableSlotsCount(availableSlotDTOS.size())
+                .availableSlots(availableSlotDTOS)
+                .build();
+    }
+
+    @Override
+    public AvailableSlotDTO getSlot(UUID slotId) {
+        Optional<Slot> optionalSlot = slotRepository.findById(slotId);
+        AvailableSlotDTO availableSlotDTO = null;
+        if (optionalSlot.isPresent()) {
+            Slot slot = optionalSlot.get();
+            availableSlotDTO = new AvailableSlotDTO(
+                    slotId,
+                    slot.formatTimeToProperView(slot.getTime()),
+                    slot.getDoctorId(),
+                    slot.getDoctorName(),
+                    slot.getCost()
+                    );
+        }
+        return availableSlotDTO;
     }
 }

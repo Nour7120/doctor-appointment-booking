@@ -6,6 +6,7 @@ import org.hibernate.annotations.Type;
 import org.hibernate.sql.ast.tree.from.CorrelatedTableGroup;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 
@@ -29,7 +30,16 @@ public class Slot {
     private String doctorName;
     @Column(name = "is_reserved", nullable = false)
     @Builder.Default
-    private boolean isReserved = false;
+    private boolean reserved = false;
     @Column(nullable = false)
     private float cost;
+
+
+
+    public String formatTimeToProperView(LocalDateTime time) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm a");
+        String formattedTime = time.format(formatter);
+        return formattedTime;
+    }
+
 }
