@@ -3,9 +3,7 @@ package com.practice.doctor_appointment_booking.doctor_availability.internal.ser
 
 import com.practice.doctor_appointment_booking.core.CustomExceptionDTO;
 import com.practice.doctor_appointment_booking.core.ICoreExposedServices;
-import com.practice.doctor_appointment_booking.doctor_availability.AvailableSlotDTO;
-import com.practice.doctor_appointment_booking.doctor_availability.GetDoctorsAvailableSlotsDTO;
-import com.practice.doctor_appointment_booking.doctor_availability.IDoctorAvailabilityExposedServices;
+import com.practice.doctor_appointment_booking.doctor_availability.*;
 import com.practice.doctor_appointment_booking.doctor_availability.internal.dtos.*;
 import com.practice.doctor_appointment_booking.doctor_availability.internal.entities.Slot;
 import com.practice.doctor_appointment_booking.doctor_availability.internal.exceptions.CustomException;
@@ -109,6 +107,23 @@ public class SlotService implements IDoctorAvailabilityExposedServices{
                 .builder()
                 .availableSlotsCount(availableSlotDTOS.size())
                 .availableSlots(availableSlotDTOS)
+                .build();
+    }
+
+    @Override
+    public GetDoctorReservedSlotsDTO fetchDoctorReservedSlots(String username) {
+        List<Slot> slots = slotRepository.findAllByDoctorName(username);
+        List<ReservedSlotDTO> reservedSlotDTOS = slots.stream()
+                .map(slot -> ReservedSlotDTO.builder()
+                        .id(slot.getId())
+                        .time(slot.formatTimeToProperView(slot.getTime()))
+                        .cost(slot.getCost())
+                        .build())
+                .toList();
+
+        return GetDoctorReservedSlotsDTO.builder()
+                .reservedSlotsCount(slots.size())
+                .reservedSlots(reservedSlotDTOS)
                 .build();
     }
 

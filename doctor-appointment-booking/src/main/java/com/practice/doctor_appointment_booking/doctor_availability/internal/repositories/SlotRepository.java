@@ -13,6 +13,7 @@ public interface SlotRepository extends JpaRepository<Slot, UUID> {
 
     List<Slot> findAllByTime(LocalDateTime time);
     List<Slot> findAllByDoctorId(long doctorId);
+    List<Slot> findAllByDoctorName(String doctorName);
     List<Slot> findAllByReservedIsFalse();
 
 }

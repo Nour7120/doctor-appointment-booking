@@ -1,7 +1,7 @@
 package com.practice.doctor_appointment_booking.appointment_booking.internal.controllers;
 
-import com.practice.doctor_appointment_booking.appointment_booking.internal.application.queries.get_doctor_available_slots_use_case.GetDoctorsAvailableSlotsResponse;
-import com.practice.doctor_appointment_booking.appointment_booking.internal.application.queries.get_doctor_available_slots_use_case.IGetDoctorAvailableSlots;
+import com.practice.doctor_appointment_booking.appointment_booking.internal.application.queries.get_doctor_available_slots.GetDoctorsAvailableSlotsResponse;
+import com.practice.doctor_appointment_booking.appointment_booking.internal.application.queries.get_doctor_available_slots.IGetDoctorAvailableSlots;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

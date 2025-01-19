@@ -1,8 +1,8 @@
 package com.practice.doctor_appointment_booking.appointment_booking.internal.controllers;
 
-import com.practice.doctor_appointment_booking.appointment_booking.internal.application.commands.book_appointment_use_case.BookAppointmentRequest;
-import com.practice.doctor_appointment_booking.appointment_booking.internal.application.commands.book_appointment_use_case.BookAppointmentResponse;
-import com.practice.doctor_appointment_booking.appointment_booking.internal.application.commands.book_appointment_use_case.IBookAppointment;
+import com.practice.doctor_appointment_booking.appointment_booking.internal.application.commands.book_appointment.BookAppointmentRequest;
+import com.practice.doctor_appointment_booking.appointment_booking.internal.application.commands.book_appointment.BookAppointmentResponse;
+import com.practice.doctor_appointment_booking.appointment_booking.internal.application.commands.book_appointment.IBookAppointment;
 import com.practice.doctor_appointment_booking.appointment_booking.internal.exceptions.CustomException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

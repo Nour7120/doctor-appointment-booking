@@ -1,4 +1,4 @@
-package com.practice.doctor_appointment_booking.appointment_booking.internal.application.queries.get_doctor_available_slots_use_case;
+package com.practice.doctor_appointment_booking.appointment_booking.internal.application.queries.get_doctor_available_slots;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.practice.doctor_appointment_booking.doctor_availability.GetDoctorsAvailableSlotsDTO;

@@ -1,7 +1,8 @@
-package com.practice.doctor_appointment_booking.appointment_booking.internal.application.commands.book_appointment_use_case;
+package com.practice.doctor_appointment_booking.appointment_booking.internal.application.commands.book_appointment;
 
 import com.practice.doctor_appointment_booking.appointment_booking.AppointmentConfirmationEvent;
-import com.practice.doctor_appointment_booking.appointment_booking.internal.domain.Appointment;
+import com.practice.doctor_appointment_booking.appointment_booking.internal.application.IAppointmentRepository;
+import com.practice.doctor_appointment_booking.appointment_booking.internal.domain.AppointmentModel;
 import com.practice.doctor_appointment_booking.appointment_booking.internal.exceptions.CustomException;
 import com.practice.doctor_appointment_booking.appointment_booking.internal.exceptions.ExceptionMessages;
 import com.practice.doctor_appointment_booking.core.CustomExceptionDTO;
@@ -32,8 +33,8 @@ public class BookAppointmentService implements IBookAppointment {
         String patientName = getPatientNameUsingDirectCall(patientId);
         UUID slotId = bookAppointmentRequest.getSlotId();
         AvailableSlotDTO slot = getSlotUsingDirectCall(slotId);
-        Appointment appointment = buildAppointment(patientId, slotId, patientName);
-        UUID appointmentId = iAppointmentRepository.save(appointment);
+        AppointmentModel appointmentModel = buildAppointment(patientId, slotId, patientName);
+        UUID appointmentId = iAppointmentRepository.save(appointmentModel);
         publishEvent(patientName, slot.getDoctorName(), slot.getTime());
         return BookAppointmentResponse.builder()
                 .statusCode(HttpStatus.CREATED.value())
@@ -59,8 +60,8 @@ public class BookAppointmentService implements IBookAppointment {
         return slotUsingDirectCall;
     }
 
-    private static Appointment buildAppointment(long patientId, UUID slotId, String patientName) {
-        return Appointment.builder()
+    private static AppointmentModel buildAppointment(long patientId, UUID slotId, String patientName) {
+        return AppointmentModel.builder()
                 .slotId(slotId)
                 .patientId(patientId)
                 .patientName(patientName)
